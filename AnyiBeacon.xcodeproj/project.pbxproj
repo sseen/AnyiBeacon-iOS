@@ -226,6 +226,9 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Sandeep Mistry";
 				TargetAttributes = {
+					AFAD8BBA187A189F00FBFA00 = {
+						DevelopmentTeam = 4N44FM69KH;
+					};
 					AFAD8BDE187A189F00FBFA00 = {
 						TestTargetID = AFAD8BBA187A189F00FBFA00;
 					};
@@ -236,6 +239,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -420,11 +424,12 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 4N44FM69KH;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AnyiBeacon/AnyiBeacon-Prefix.pch";
 				INFOPLIST_FILE = "AnyiBeacon/AnyiBeacon-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.sandeepmistry.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.oeoly.anyibeacon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -438,11 +443,12 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 4N44FM69KH;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AnyiBeacon/AnyiBeacon-Prefix.pch";
 				INFOPLIST_FILE = "AnyiBeacon/AnyiBeacon-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.sandeepmistry.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.oeoly.anyibeacon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;

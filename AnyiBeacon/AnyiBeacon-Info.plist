@@ -24,8 +24,14 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>use app</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>use app</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>use app</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>To discover beacons in range</string>
+	<string>use  app</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main_iPhone</string>
 	<key>UIMainStoryboardFile~ipad</key>

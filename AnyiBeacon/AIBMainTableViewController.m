@@ -40,9 +40,12 @@
 	self.beaconsDict=[[NSMutableDictionary alloc] init];
 	self.sortByMajorMinor=NO;
 	
-	AIBBeaconRegionAny *beaconRegionAny = [[AIBBeaconRegionAny alloc] initWithIdentifier:@"Any"];
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:@ "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];//iBeaconConfiguration.uuid
+    CLBeaconRegion *one = [[CLBeaconRegion alloc] initWithUUID:uuid identifier:@"any"];
+    // let beaconRegion: CLBeaconRegion = CLBeaconRegion(proximityUUID: uuid!, identifier: "tw.darktt.beaconDemo")
+	// AIBBeaconRegionAny *beaconRegionAny = [[AIBBeaconRegionAny alloc] initWithIdentifier:@"Any"];
 	[self.locationManager requestWhenInUseAuthorization];
-	[self.locationManager startRangingBeaconsInRegion:beaconRegionAny];
+	[self.locationManager startRangingBeaconsInRegion:one];
 		
 	self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Order by major/minor" style:UIBarButtonItemStylePlain target:self action:@selector(changeOrdenation)];
 }
@@ -141,7 +144,7 @@
 	CLBeacon* beacon=[[_beaconsDict objectForKey:key] objectAtIndex:[indexPath indexAtPosition:1]];
 	cell.textLabel.text=[[NSString alloc] initWithFormat:@"M:%@ m:%@", beacon.major, beacon.minor];
 	
-	cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\tProximity: %@", beacon.accuracy, [AIBUtils stringForProximityValue:beacon.proximity]];
+	cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %ddbm\tProximity: %@", beacon.accuracy,beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
     
     return cell;
 }

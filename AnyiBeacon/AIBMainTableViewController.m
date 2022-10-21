@@ -19,9 +19,13 @@
 
 @property(nonatomic, strong) NSDictionary*		beaconsDict;
 @property(nonatomic, strong) CLLocationManager* locationManager;
-@property(nonatomic, strong) NSArray*			listUUID;
-@property(nonatomic)		 BOOL				sortByMajorMinor;
+@property(nonatomic, strong) NSArray*            listUUID;
+@property(nonatomic, strong) NSMutableArray*	logListUUID;
+@property(nonatomic)         BOOL                sortByMajorMinor;
+@property(nonatomic)		 BOOL				isStartLog;
 @property(nonatomic, retain) CLBeacon*			selectedBeacon;
+
+@property(nonatomic, strong) UITextView *tvLog;
 
 @end
 
@@ -39,6 +43,11 @@
 	self.listUUID=[[NSArray alloc] init];
 	self.beaconsDict=[[NSMutableDictionary alloc] init];
 	self.sortByMajorMinor=NO;
+    
+    self.tvLog = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+    self.tvLog.font = [UIFont systemFontOfSize:12];
+    self.tvLog.textColor = [UIColor blackColor];
+    self.logListUUID = [NSMutableArray array];
 	
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:@ "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];//iBeaconConfiguration.uuid
     CLBeaconRegion *one = [[CLBeaconRegion alloc] initWithUUID:uuid identifier:@"any"];
@@ -48,6 +57,7 @@
 	[self.locationManager startRangingBeaconsInRegion:one];
 		
 	self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Order by major/minor" style:UIBarButtonItemStylePlain target:self action:@selector(changeOrdenation)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"start" style:UIBarButtonItemStylePlain target:self action:@selector(logBeacons)];
 }
 
 - (void) changeOrdenation{
@@ -57,6 +67,23 @@
 	} else {
 		self.navigationItem.rightBarButtonItem.title=@"Order by major/minor";
 	}
+}
+
+- (void)logBeacons {
+    _isStartLog = !_isStartLog;
+    if (_isStartLog) {
+        self.navigationItem.leftBarButtonItem.title=@"Stop";
+        [_logListUUID removeAllObjects];
+    } else {
+        self.navigationItem.leftBarButtonItem.title=@"Start";
+        NSString *content = @"";
+        for (CLBeacon *one in _logListUUID) {
+            NSString *new = [[NSString alloc] initWithFormat:@"time:%@, major:%@, minor:%@, rssi:%d\n",
+                        one.timestamp, one.major, one.minor, one.rssi];
+            content = [content stringByAppendingString:new];
+        }
+        _tvLog.text = content;
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
@@ -104,8 +131,14 @@
 			}];
 		}
 	}
-	_listUUID=listUuid;
-	_beaconsDict=beaconsDict;
+    if (_isStartLog) {
+        for (CLBeacon *one in _beaconsDict.allValues[0]) {
+            [_logListUUID addObject:one];
+        }
+    } else {
+        _listUUID=listUuid;
+    }
+    _beaconsDict=beaconsDict;
 	
 	[self.tableView reloadData];
 }
@@ -130,7 +163,7 @@
 {
     // Return the number of rows in the section.
 	NSString* key=[_listUUID objectAtIndex:section];
-    return [[_beaconsDict objectForKey:key] count];
+    return _isStartLog ? _logListUUID.count : [[_beaconsDict objectForKey:key] count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
@@ -140,11 +173,18 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
 	
-	NSString* key=[_listUUID objectAtIndex:[indexPath indexAtPosition:0]];
-	CLBeacon* beacon=[[_beaconsDict objectForKey:key] objectAtIndex:[indexPath indexAtPosition:1]];
-	cell.textLabel.text=[[NSString alloc] initWithFormat:@"M:%@ m:%@", beacon.major, beacon.minor];
-	
-	cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %ddbm\tProximity: %@", beacon.accuracy,beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
+    if (_isStartLog) {
+        CLBeacon* beacon=_logListUUID[indexPath.row] ;
+        cell.textLabel.text=[[NSString alloc] initWithFormat:@"M:%@ m:%@", beacon.major, beacon.minor];
+        
+        cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %ddbm\tProximity: %@", beacon.accuracy,beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
+    } else {
+        NSString* key=[_listUUID objectAtIndex:[indexPath indexAtPosition:0]];
+        CLBeacon* beacon=[[_beaconsDict objectForKey:key] objectAtIndex:[indexPath indexAtPosition:1]];
+        cell.textLabel.text=[[NSString alloc] initWithFormat:@"M:%@ m:%@", beacon.major, beacon.minor];
+        
+        cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %ddbm\tProximity: %@", beacon.accuracy,beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
+    }
     
     return cell;
 }
@@ -156,6 +196,11 @@
     AIBDetailViewController* detail=[self.storyboard instantiateViewControllerWithIdentifier:@"detail"];
 	detail.beacon=_selectedBeacon;
 	[self.navigationController pushViewController:detail animated:YES];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    return _tvLog;
 }
 
 @end

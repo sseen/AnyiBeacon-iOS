@@ -32,6 +32,8 @@
 	<string>use app</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>use  app</string>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen.storyboard</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main_iPhone</string>
 	<key>UIMainStoryboardFile~ipad</key>

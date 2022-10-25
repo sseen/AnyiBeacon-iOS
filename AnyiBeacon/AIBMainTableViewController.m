@@ -44,7 +44,7 @@
 	self.beaconsDict=[[NSMutableDictionary alloc] init];
 	self.sortByMajorMinor=NO;
     
-    self.tvLog = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+    self.tvLog = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 200, 80)];
     self.tvLog.font = [UIFont systemFontOfSize:12];
     self.tvLog.textColor = [UIColor blackColor];
     self.logListUUID = [NSMutableArray array];
@@ -58,6 +58,35 @@
 		
 	self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Order by major/minor" style:UIBarButtonItemStylePlain target:self action:@selector(changeOrdenation)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"start" style:UIBarButtonItemStylePlain target:self action:@selector(logBeacons)];
+}
+
+- (void) showAddAlert {
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle: @"Add"
+                                                                                     message: @"Input username and password"
+                                                                                 preferredStyle:UIAlertControllerStyleAlert];
+       [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+           textField.placeholder = @"uuid";
+           textField.textColor = [UIColor blueColor];
+           textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+           textField.borderStyle = UITextBorderStyleRoundedRect;
+       }];
+       [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+           NSArray * textfields = alertController.textFields;
+           UITextField * namefield = textfields[0];
+           UITextField * passwordfiled = textfields[1];
+           NSLog(@"%@:%@",namefield.text,passwordfiled.text);
+
+       }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * action) {
+
+                                                          NSLog(@"cancel btn");
+
+                                                          [alertController dismissViewControllerAnimated:YES completion:nil];
+
+    }]];
+       [self presentViewController:alertController animated:YES completion:nil];
+
 }
 
 - (void) changeOrdenation{
@@ -199,8 +228,19 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIStackView *stackView = [[UIStackView alloc] init];
+    stackView.axis = UILayoutConstraintAxisVertical;
+    stackView.distribution = UIStackViewDistributionFill;
+    [stackView addArrangedSubview:_tvLog];
     
-    return _tvLog;
+    UIButton *btOne = [[UIButton alloc] initWithFrame:CGRectZero];
+    [btOne setTitle:@"Add" forState:UIControlStateNormal];
+    [btOne addTarget:self action:@selector(showAddAlert) forControlEvents:UIControlEventTouchUpInside];
+    
+    [stackView addArrangedSubview:btOne];
+    
+    return stackView;
 }
+
 
 @end

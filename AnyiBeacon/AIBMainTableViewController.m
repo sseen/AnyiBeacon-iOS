@@ -15,7 +15,7 @@
 
 @import CoreLocation;
 
-@interface AIBMainTableViewController ()<CLLocationManagerDelegate>
+@interface AIBMainTableViewController ()<CLLocationManagerDelegate,UITextViewDelegate>
 
 @property(nonatomic, strong) NSDictionary*		beaconsDict;
 @property(nonatomic, strong) CLLocationManager* locationManager;
@@ -32,6 +32,17 @@
 
 @implementation AIBMainTableViewController
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+
+    if([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+
+    return YES;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -46,8 +57,10 @@
 	self.sortByMajorMinor=NO;
     
     self.tvLog = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 200, 80)];
+    self.tvLog.backgroundColor = [UIColor secondarySystemBackgroundColor];
     self.tvLog.font = [UIFont systemFontOfSize:12];
-    self.tvLog.textColor = [UIColor blackColor];
+    self.tvLog.delegate = self;
+    self.tvLog.textColor = [UIColor labelColor];
     self.logListUUID = [NSMutableArray array];
 	
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:@ "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];//iBeaconConfiguration.uuid
@@ -67,7 +80,7 @@
                                                                                  preferredStyle:UIAlertControllerStyleAlert];
        [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
            textField.placeholder = @"uuid";
-           textField.textColor = [UIColor blueColor];
+           textField.textColor = [UIColor labelColor];
            textField.clearButtonMode = UITextFieldViewModeWhileEditing;
            textField.borderStyle = UITextBorderStyleRoundedRect;
        }];
@@ -200,7 +213,7 @@
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 120.0;
+    return 140.0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

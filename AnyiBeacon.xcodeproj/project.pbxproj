@@ -462,7 +462,7 @@
 				GCC_PREFIX_HEADER = "AnyiBeacon/AnyiBeacon-Prefix.pch";
 				INFOPLIST_FILE = "AnyiBeacon/AnyiBeacon-Info.plist";
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bestskip.anyibeacon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -481,7 +481,7 @@
 				GCC_PREFIX_HEADER = "AnyiBeacon/AnyiBeacon-Prefix.pch";
 				INFOPLIST_FILE = "AnyiBeacon/AnyiBeacon-Info.plist";
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bestskip.anyibeacon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

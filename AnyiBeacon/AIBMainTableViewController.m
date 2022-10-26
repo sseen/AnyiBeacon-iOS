@@ -23,7 +23,8 @@
 @property(nonatomic, strong) NSMutableArray*	logListUUID;
 @property(nonatomic)         BOOL                sortByMajorMinor;
 @property(nonatomic)		 BOOL				isStartLog;
-@property(nonatomic, retain) CLBeacon*			selectedBeacon;
+@property(nonatomic, retain) CLBeacon*            selectedBeacon;
+@property(nonatomic, retain) CLBeaconRegion*	currentOne;
 
 @property(nonatomic, strong) UITextView *tvLog;
 
@@ -50,11 +51,11 @@
     self.logListUUID = [NSMutableArray array];
 	
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:@ "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];//iBeaconConfiguration.uuid
-    CLBeaconRegion *one = [[CLBeaconRegion alloc] initWithUUID:uuid identifier:@"any"];
+    self.currentOne = [[CLBeaconRegion alloc] initWithUUID:uuid identifier:@"any"];
     // let beaconRegion: CLBeaconRegion = CLBeaconRegion(proximityUUID: uuid!, identifier: "tw.darktt.beaconDemo")
 	// AIBBeaconRegionAny *beaconRegionAny = [[AIBBeaconRegionAny alloc] initWithIdentifier:@"Any"];
 	[self.locationManager requestWhenInUseAuthorization];
-	[self.locationManager startRangingBeaconsInRegion:one];
+	[self.locationManager startRangingBeaconsInRegion:self.currentOne];
 		
 	self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Order by major/minor" style:UIBarButtonItemStylePlain target:self action:@selector(changeOrdenation)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"start" style:UIBarButtonItemStylePlain target:self action:@selector(logBeacons)];
@@ -70,22 +71,32 @@
            textField.clearButtonMode = UITextFieldViewModeWhileEditing;
            textField.borderStyle = UITextBorderStyleRoundedRect;
        }];
-       [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-           NSArray * textfields = alertController.textFields;
-           UITextField * namefield = textfields[0];
-           UITextField * passwordfiled = textfields[1];
-           NSLog(@"%@:%@",namefield.text,passwordfiled.text);
+    UIAlertAction *okA = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSArray * textfields = alertController.textFields;
+        UITextField * namefield = textfields[0];
+        
+        [self.locationManager stopRangingBeaconsInRegion:self.currentOne];
+        
+        NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:namefield.text];//iBeaconConfiguration.uuid
+        self.currentOne = [[CLBeaconRegion alloc] initWithUUID:uuid identifier:@"any"];
+        // let beaconRegion: CLBeaconRegion = CLBeaconRegion(proximityUUID: uuid!, identifier: "tw.darktt.beaconDemo")
+        // AIBBeaconRegionAny *beaconRegionAny = [[AIBBeaconRegionAny alloc] initWithIdentifier:@"Any"];
+        [self.locationManager requestWhenInUseAuthorization];
+        [self.locationManager startRangingBeaconsInRegion:self.currentOne];
 
-       }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction * action) {
+    }];
+    UIAlertAction *cancelA = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action) {
 
-                                                          NSLog(@"cancel btn");
+                                                        NSLog(@"cancel btn");
 
-                                                          [alertController dismissViewControllerAnimated:YES completion:nil];
+                                                        [alertController dismissViewControllerAnimated:YES completion:nil];
 
-    }]];
-       [self presentViewController:alertController animated:YES completion:nil];
+    }];
+    [alertController addAction:cancelA];
+    [alertController addAction:okA];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
 
 }
 
@@ -183,6 +194,10 @@
 
 #pragma mark - Table view data source
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 120.0;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [_listUUID count];
@@ -235,6 +250,7 @@
     
     UIButton *btOne = [[UIButton alloc] initWithFrame:CGRectZero];
     [btOne setTitle:@"Add" forState:UIControlStateNormal];
+    [btOne setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
     [btOne addTarget:self action:@selector(showAddAlert) forControlEvents:UIControlEventTouchUpInside];
     
     [stackView addArrangedSubview:btOne];

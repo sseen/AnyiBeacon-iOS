@@ -75,6 +75,11 @@
         NSArray * textfields = alertController.textFields;
         UITextField * namefield = textfields[0];
         
+        if (namefield.text.length <= 0) {
+            return;
+        }
+        self->_listUUID = @[];
+        
         [self.locationManager stopRangingBeaconsInRegion:self.currentOne];
         
         NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:namefield.text];//iBeaconConfiguration.uuid
@@ -221,13 +226,13 @@
         CLBeacon* beacon=_logListUUID[indexPath.row] ;
         cell.textLabel.text=[[NSString alloc] initWithFormat:@"M:%@ m:%@", beacon.major, beacon.minor];
         
-        cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %ddbm\tProximity: %@", beacon.accuracy,beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
+        cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %lddbm\tProximity: %@", beacon.accuracy,(long)beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
     } else {
         NSString* key=[_listUUID objectAtIndex:[indexPath indexAtPosition:0]];
         CLBeacon* beacon=[[_beaconsDict objectForKey:key] objectAtIndex:[indexPath indexAtPosition:1]];
         cell.textLabel.text=[[NSString alloc] initWithFormat:@"M:%@ m:%@", beacon.major, beacon.minor];
         
-        cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %ddbm\tProximity: %@", beacon.accuracy,beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
+        cell.detailTextLabel.text=[[NSString alloc] initWithFormat:@"Distance: %.2fm\trssi: %lddbm\tProximity: %@", beacon.accuracy,(long)beacon.rssi, [AIBUtils stringForProximityValue:beacon.proximity]];
     }
     
     return cell;
@@ -249,8 +254,9 @@
     [stackView addArrangedSubview:_tvLog];
     
     UIButton *btOne = [[UIButton alloc] initWithFrame:CGRectZero];
-    [btOne setTitle:@"Add" forState:UIControlStateNormal];
-    [btOne setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
+    [btOne setTitle:@"Add UUID" forState:UIControlStateNormal];
+    [btOne setFont:[UIFont systemFontOfSize:16 weight:UIFontWeightBold]];
+    [btOne setTitleColor:UIColor.tintColor forState:UIControlStateNormal];
     [btOne addTarget:self action:@selector(showAddAlert) forControlEvents:UIControlEventTouchUpInside];
     
     [stackView addArrangedSubview:btOne];
